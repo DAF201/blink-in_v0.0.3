@@ -1,0 +1,27 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <button onclick="request_api()">test</button>
+    <textarea name="APIS" id="files"></textarea>
+</body>
+<script>
+    const url = new URL("https://127.0.0.1:8000/API");
+    function request_api() {
+        params = (document.getElementById("files").value)
+        console.log(params)
+        url.search = new URLSearchParams(params);
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+    }
+</script>
+
+</html>

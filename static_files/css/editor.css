@@ -1,0 +1,28 @@
+.me {
+    height: 100vh;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.editor_div {
+    width: 98vw;
+    height: 98vh;
+    margin: auto;
+}
+
+.editor_div_button_div {
+    text-align: center;
+    z-index: 1;
+    position: fixed;
+    left: 3vw;
+    bottom: 15vh;
+}
+
+.editor_div_button_div button {
+    width: 4vw;
+    height: 3vh;
+}

@@ -1,0 +1,7 @@
+*.mp4
+*.mp3
+*.webp
+*.png
+*test*.*
+__pycache__
+.vscode

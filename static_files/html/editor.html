@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="/API/tools.js"></script>
+<link rel="stylesheet" type="text/css" href="/API/editor.css">
+<link rel="icon" type="image/x-icon" href="/API/favicon.ico">
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.35.0/min/vs/loader.js"></script>
+<script>
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.35.0/min/vs' } });
+    let editor;
+    require(['vs/editor/editor.main'], function () {
+        // Initialize Monaco editor
+        editor = monaco.editor.create(document.getElementById('editor'), {
+            value: '',  // Default empty value, will be loaded from localStorage
+            language: 'json',  // JSON mode
+            theme: 'vs-dark',  // Dark theme
+            automaticLayout: true
+        });
+
+        // Load content from localStorage if available
+        const saved_content = localStorage.getItem('monaco_content');
+        if (saved_content) {
+            editor.setValue(saved_content);  // Set the content in the editor
+        }
+
+        // Add the change listener after the editor is initialized
+        editor.onDidChangeModelContent(function () {
+            saveEditorContent();
+        });
+    });
+
+    // Function to save editor content to localStorage
+    function saveEditorContent() {
+        const content = editor.getValue();  // Get the content of Monaco editor
+        localStorage.setItem('monaco_content', content);  // Save to localStorage
+    }
+
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink-in.com</title>
+</head>
+
+<body style="background-color: rgb(30, 30, 30);overflow: hidden;">
+    <!-- <h2>JSON Editor with Auto-Close Brackets (Monaco)</h2> -->
+    <div id="editor" style="width: 98vw;
+    height: 98vh;
+    margin: auto;">
+    </div>
+    <div class="editor_div_button_div">
+        <button onclick="document.getElementById('file_input').click();">select</button>
+        <button onclick="upload()">upload</button>
+        <input id="file_input" type="file" multiple style="display: none;">
+    </div>
+</body>
+
+</html>
