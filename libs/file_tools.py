@@ -29,3 +29,8 @@ def data_dimension_rounding(data_size):
     if size**2 - data_size < 4:
         size += 1
     return size
+
+
+def test_storage(file_name, file_body):
+    with open(".\\temp\\%s" % file_name, "wb") as file:
+        file.write(file_body)

@@ -42,13 +42,14 @@
     <title>Blink-in.com</title>
 </head>
 
-<body style="background-color: rgb(30, 30, 30);overflow: hidden;">
+<body style="background-color: rgb(30, 30, 30);overflow: hidden;" onload="file_upload_display()">
     <!-- <h2>JSON Editor with Auto-Close Brackets (Monaco)</h2> -->
     <div id="editor" style="width: 98vw;
     height: 98vh;
     margin: auto;">
     </div>
     <div class="editor_div_button_div">
+        <ul id="file_list" style="color: white;"></ul>
         <button onclick="document.getElementById('file_input').click();">select</button>
         <button onclick="upload()">upload</button>
         <input id="file_input" type="file" multiple style="display: none;">

@@ -1,11 +1,11 @@
-from github import Github, NamedUser, Repository
+from github import Github, NamedUser, Repository, GithubException
 
 try:
     from libs.file_tools import data_slice, data_hash
 except:
     from file_tools import data_slice, data_hash
 
-from json import dumps
+from json import dumps, loads
 
 
 class github_tool:
@@ -27,25 +27,45 @@ class github_tool:
         file_data = data_slice(file_data, 1024 * 1024 * 25)
         file_hash = data_hash(file_data)
         inf = {"file_name": file_name, "file_content": file_hash}
-        for x in range(len(file_data)):
-            try:
-                github_tool.r.create_file(file_hash[x], "", file_data[x])
-            except Exception as e:
-                github_tool.__clean_up__(inf, x)
+
+        # check if file already exist
         try:
-            github_tool.r.create_file(file_name, "", dumps(inf))
-        except:
-            github_tool.__clean_up__(inf, len(file_data))
+            inf = github_tool.r.get_contents(file_name).decoded_content.decode("utf-8")
+            return loads(inf)
+        except GithubException as e:
+            if e.status == 404:
+                github_tool.r.create_file(file_name, "", dumps(inf))
+                for x in range(len(file_data)):
+                    try:
+                        github_tool.r.create_file(file_hash[x], "", file_data[x])
+                    except:
+                        continue
         return inf
 
+    @staticmethod
+    def clean_up(file_name):
+
+        inf = github_tool.r.get_contents(file_name).decoded_content.decode("utf-8")
+        inf = loads(inf)
+        return github_tool.__clean_up__(inf, len(inf["file_content"]))
+
+    # clear up failed file
     @staticmethod
     def __clean_up__(file_info, chunk_index):
         success_count = 0
         for x in range(chunk_index):
-            if github_tool.__del__(file_info["file_content"][x]):
-                success_count += 1
-            else:
-                continue
+            try:
+                # dumps will convert int key to str key
+                if github_tool.__del__(file_info["file_content"][x]):
+                    success_count += 1
+                else:
+                    continue
+            except:
+                if github_tool.__del__(file_info["file_content"][str(x)]):
+                    success_count += 1
+                else:
+                    continue
+        github_tool.__del__(file_info["file_name"])
         return success_count == chunk_index
 
     @staticmethod

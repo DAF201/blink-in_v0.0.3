@@ -1,8 +1,10 @@
 from tornado.web import RequestHandler
 from libs.static_files_loader import load_static_files, load_config_file, content_type
+from libs.file_tools import test_storage
 
 
 def request_wrapper(func):
+    # havent decide if I need this
     def wrapper(*args, **kwargs):
         # TODO: before request handle
         func(*args, **kwargs)
@@ -44,15 +46,18 @@ class API(RequestHandler):
             except:
                 self.write_error(404)
 
+    @request_wrapper
     def post(self, path):
-        try:
-            args = self.request.arguments
-            files = self.request.files
-            self.write_error(200)
-            print(args)
-            print(files.keys())
-        except:
-            pass
+
+        args = self.request.arguments
+        files = self.request.files
+        for key in files:
+            temp_file = files[key][0]
+            test_storage(temp_file["filename"], temp_file["body"])
+
+
+
+        self.write_error(200)
 
 
 PATH_DIR = [(r"/", root), (r"/API(.*)", API)]
