@@ -1,6 +1,4 @@
-# convert from C++ to python with GPT since ctypes does not like my c++ dll
 class Data:
-    # Character encoding and decoding maps
     byte2char_map = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+-"
 
     @staticmethod
@@ -23,16 +21,18 @@ class Data:
 
     @staticmethod
     def encode(data):
-        # Convert input bytes to a string of encoded characters
         result = []
-        padded_data = bytearray(data)  # Use bytearray for input data
+        padded_data = bytearray(data)  # Convert input data to mutable bytearray
+        padding_count = (3 - (len(padded_data) % 3)) % 3  # Calculate padding needed
 
-        # Handle padding to make the length a multiple of 3 (needed for base64-like encoding)
-        while len(padded_data) % 3 != 0:
-            padded_data.append(0)  # Add padding byte (0) if necessary
+        # Store the padding count in the first character
+        result.append(Data.byte2char(padding_count))
+
+        # Add padding bytes (0s) if needed
+        for _ in range(padding_count):
+            padded_data.append(0)
 
         for i in range(0, len(padded_data), 3):
-            # Break 3 bytes into 4 characters
             result.append(Data.byte2char((padded_data[i] & 0b11111100) >> 2))
             result.append(
                 Data.byte2char(
@@ -48,23 +48,24 @@ class Data:
             )
             result.append(Data.byte2char(padded_data[i + 2] & 0b00111111))
 
-        return "".join(result)
+        return "".join(result)  # Return encoded string
 
     @staticmethod
     def decode(data):
-        # Decode string of encoded characters into bytes
         decoded_data = bytearray()
 
+        # Read padding count from the first character
+        padding_count = Data.char2byte(data[0])
+        data = data[1:]  # Remove padding byte from encoded data
+
         for i in range(0, len(data), 4):
-            # Each group of 4 characters corresponds to 3 bytes
             b0 = Data.char2byte(data[i])
             b1 = Data.char2byte(data[i + 1])
             b2 = Data.char2byte(data[i + 2])
             b3 = Data.char2byte(data[i + 3])
 
-            # Rebuild the original 3 bytes from 4 encoded characters
             decoded_data.append((b0 << 2) | ((b1 & 0b00110000) >> 4))
             decoded_data.append(((b1 & 0b00001111) << 4) | ((b2 & 0b00111100) >> 2))
             decoded_data.append(((b2 & 0b00000011) << 6) | b3)
 
-        return decoded_data
+        return decoded_data[:-padding_count] if padding_count > 0 else decoded_data
