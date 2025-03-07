@@ -10,10 +10,10 @@ def main():
     application = Application(API.PATH_DIR)
     http_server = HTTPServer(
         application,
-        # ssl_options={
-        #     "certfile": load_static_files.load_config_file()["ssl"]["ssl_full_chain"],
-        #     "keyfile": load_static_files.load_config_file()["ssl"]["ssl_private_key"],
-        # },
+        ssl_options={
+            "certfile": load_static_files.load_config_file()["ssl"]["ssl_full_chain"],
+            "keyfile": load_static_files.load_config_file()["ssl"]["ssl_private_key"],
+        },
     )
     http_server.listen(load_static_files.load_config_file()["network"]["port"])
     IOLoop.instance().start()

@@ -1,10 +1,10 @@
 {
     "network": {
-        "port": 8000
+        "port": 443
     },
     "ssl": {
-        "ssl_full_chain": "C:\\Users\\daf201\\Desktop\\fullchain.pem",
-        "ssl_private_key": "C:\\Users\\daf201\\Desktop\\privkey.pem"
+        "ssl_full_chain": "C:\\Users\\daf201\\Desktop\\fc.pem",
+        "ssl_private_key": "C:\\Users\\daf201\\Desktop\\pk.pem"
     },
     "static_files": {
         "html": ".\\static_files\\html\\",
