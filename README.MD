@@ -1,6 +1,8 @@
 this was designed for image bed initally. I am using github for now since I cannot find a good place to store at this moment
 
-#APIs
+https://blink-in.com
+
+# API
 
 ```python
 from requests import post
