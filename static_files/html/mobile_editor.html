@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="/API/tools.js"></script>
+<link rel="stylesheet" type="text/css" href="/API/editor.css">
+<link rel="icon" type="image/x-icon" href="/API/favicon.ico">
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.35.0/min/vs/loader.js"></script>
+<script>
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.35.0/min/vs' } });
+    let editor;
+    require(['vs/editor/editor.main'], function () {
+        // Initialize Monaco editor
+        editor = monaco.editor.create(document.getElementById('editor'), {
+            value: '{}',
+            language: 'json',
+            theme: 'vs-dark',
+            automaticLayout: true
+        });
+    });
+
+    // Function to copy editor content to clipboard (using execCommand for better mobile support)
+    function copyToClipboard() {
+        const content = editor.getValue();  // Get the current content of the editor
+        const textArea = document.createElement("textarea"); // Create a temporary textarea element
+        textArea.value = content;  // Set the value of the textarea to the editor content
+        document.body.appendChild(textArea);  // Append the textarea to the body
+        textArea.select();  // Select the content in the textarea
+        const successful = document.execCommand('copy');  // Execute the copy command
+        document.body.removeChild(textArea);  // Remove the textarea from the document
+    }
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink-in.com</title>
+    <style>
+        body {
+            background-color: rgb(30, 30, 30);
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        #editor {
+            width: 98vw;
+            height: 90vh;
+            margin: auto;
+        }
+
+        .editor_div_button_div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #222;
+        }
+
+        .editor_div_button_div button {
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            min-width: 100px;
+            cursor: pointer;
+            border-radius: 5px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .editor_div_button_div button:hover {
+            background-color: #555;
+        }
+
+        #file_list {
+            color: white;
+            text-align: center;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .editor_div_button_div {
+                flex-wrap: wrap;
+                /* Prevents buttons from overlapping */
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .editor_div_button_div button {
+                width: 90%;
+                /* Makes buttons full-width on mobile */
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            #editor {
+                height: 80vh;
+                /* Adjusts editor height for mobile */
+            }
+        }
+    </style>
+</head>
+
+<body onload="file_upload_display()">
+    <div id="editor"></div>
+    <div class="editor_div_button_div">
+        <ul id="file_list"></ul>
+        <button onclick="document.getElementById('file_input').click();">Select File</button>
+        <button onclick="upload()">Upload</button>
+        <button onclick="copyToClipboard()">Copy</button> <!-- Copy Button -->
+        <input id="file_input" type="file" multiple style="display: none;">
+    </div>
+</body>
+
+</html>

@@ -17,10 +17,16 @@ def data_hash(chunks):
 
 
 # test purpose, not used yet
-def virtual_file(data):
-    if type(data) != bytes:
-        data = dumps(data)
-    return BytesIO(data)
+def virtual_file():
+    return BytesIO()
+
+
+def write_virtual_file(data: any):
+    return BytesIO(dumps(data))
+
+
+def read_virtual_file(file: BytesIO):
+    return loads(file.read())
 
 
 # for encoding

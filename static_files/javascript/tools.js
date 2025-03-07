@@ -57,21 +57,54 @@ function request_json(method, URL, params) {
     request.send(JSON.stringify(params))
 }
 
-function upload() {
+async function upload() {
     const file_list = document.getElementById("file_list");
-    file_list.innerHTML = ""
-    let form = new FormData()
-    const files = document.getElementById("file_input").files
+    file_list.innerHTML = "";
+    let form = new FormData();
+    const files = document.getElementById("file_input").files;
+
     for (let i = 0; i < files.length; i++) {
-        form.append(i, files[i])
+        form.append(i, files[i]);
     }
-    form.append("editor_data", editor.getValue())
-    fetch("/API", {
-        method: "POST",
-        body: form
-    }).then(response=>console.log(response))
-    files.values = ""
+    form.append("editor_data", editor.getValue());
+
+    try {
+        let r = await fetch("/API", {
+            method: "POST",
+            body: form
+        });
+
+        let rClone = r.clone();
+        let contentType = r.headers.get("Content-Type");
+        if (contentType && contentType.includes("application/json")) {
+            let j = await r.json();
+            let res = {};
+            let c = 0;
+            Object.keys(j).forEach((key) => {
+                res[c++] = j[key]["file_name"];
+            });
+            editor.setValue(JSON.stringify(res));
+            document.getElementById("file_input").value = "";
+            return
+        } else {
+            let b = await rClone.blob();
+            let blob_url = window.URL.createObjectURL(b);
+            let a = document.createElement('a');
+            a.href = blob_url;
+            a.download = "blink-in.zip";
+            a.target = "_blank";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(blob_url);
+        }
+    } catch (error) {
+        console.error("An error occurred:", error);
+    }
+    editor.setValue("{}")
+    document.getElementById("file_input").value = "";
 }
+
 
 function file_upload_display() {
     document.getElementById("file_input").addEventListener("change", function (event) {

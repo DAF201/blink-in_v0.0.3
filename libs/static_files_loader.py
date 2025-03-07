@@ -43,6 +43,7 @@ content_type = {
     "alternative": "multipart/alternative",
     "mixed": "multipart/mixed",
     "ico": "image/x-icon",
+    "zip": "application/zip",
 }
 
 
@@ -64,8 +65,12 @@ def load_config_file():
                 load_config_file.config["database"][line[:split_index]] = line[
                     split_index + 1 : -1
                 ]
-        with open(load_config_file.config["database"]["token_path"]) as github_token_path:
-                load_config_file.config["database"]["github_token"] = github_token_path.read()
+        with open(
+            load_config_file.config["database"]["token_path"]
+        ) as github_token_path:
+            load_config_file.config["database"][
+                "github_token"
+            ] = github_token_path.read()
         return load_config_file.config
 
     return load_config_file.config if load_config_file.data_loaded else load_data()
