@@ -32,6 +32,6 @@ enter/paste the target files as json to editor and click upload, ensure no file 
 
 ## upload
 
-select files and click upload
+select files and click upload, result json will be returned to editor
 
 ![](https://github.com/DAF201/blink-in_v0.0.3/blob/master/static_files/image/upload.png)
